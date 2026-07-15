@@ -1,0 +1,14 @@
+Final polish: architecture diagram, quickstart, tests, and cleanup
+
+- Add mermaid architecture diagram to README (renders natively on GitHub)
+- Add Quickstart section with real commands for both smoke-test and
+  full-pipeline paths
+- Add tests/test_pipeline.py: 5 pytest smoke tests covering temporal split
+  leakage guard, feature assembly (nulls + no object-column leakage into
+  the large frame), LightGBM data prep correctness, and ranking metrics
+  correctness -- all passing
+- Fix requirements.txt: pyarrow was missing despite being required for
+  parquet I/O
+- Add .pytest_cache to .gitignore, remove empty notebooks/ dir
+- Verified via git ls-files: only 88K of code/docs tracked, no data/model
+  artifacts leaked into the repo

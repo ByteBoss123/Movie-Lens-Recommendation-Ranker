@@ -1,0 +1,26 @@
+[
+  {
+    "k_candidates": 100,
+    "n_eval_users": 800,
+    "retrieval_only": {"ndcg@10": 0.0460, "mrr": null, "recall@50": null, "n_users_evaluated": 800},
+    "retrieval_plus_ranker": {"ndcg@10": 0.0581, "mrr": null, "recall@50": null, "n_users_evaluated": 800},
+    "retrieval_latency_ms": {"p50": null, "p99": 0.52},
+    "ranker_stage_latency_ms": {"p50": null, "p99": 1.49}
+  },
+  {
+    "k_candidates": 500,
+    "n_eval_users": 800,
+    "retrieval_only": {"ndcg@10": 0.0355, "mrr": null, "recall@50": null, "n_users_evaluated": 800},
+    "retrieval_plus_ranker": {"ndcg@10": 0.0364, "mrr": null, "recall@50": null, "n_users_evaluated": 800},
+    "retrieval_latency_ms": {"p50": null, "p99": 1.26},
+    "ranker_stage_latency_ms": {"p50": null, "p99": 6.23}
+  },
+  {
+    "k_candidates": 2000,
+    "n_eval_users": 800,
+    "retrieval_only": {"ndcg@10": 0.0339, "mrr": 0.0854, "recall@50": 0.0537, "n_users_evaluated": 800},
+    "retrieval_plus_ranker": {"ndcg@10": 0.0283, "mrr": 0.0834, "recall@50": 0.0648, "n_users_evaluated": 800},
+    "retrieval_latency_ms": {"p50": 2.50, "p99": 3.47},
+    "ranker_stage_latency_ms": {"p50": 17.69, "p99": 26.83}
+  }
+]
