@@ -36,24 +36,25 @@ flowchart LR
 ## Quickstart
 
 ```bash
-pip install -r requirements.txt
+python -m pip install -r requirements-dev.txt
 
 # Run the smoke-test suite (fabricated small data, ~3s)
-pytest tests/
+python -m pytest tests/
 
 # Full pipeline on real data (requires ml-25m.zip from grouplens.org,
 # unzipped to data/raw/ml-25m/):
 python -m src.data.load_movielens
 python -m src.retrieval.train_als
+python -m src.features.prepare_ranker --user-fraction 0.35
 python -m src.ranking.train_ranker
 python -m src.eval.evaluate
 
 # Serve
-uvicorn src.serving.app:app --reload
+python -m uvicorn src.serving.app:app --reload
 # then: curl "http://127.0.0.1:8000/recommend?user_id=1&k_candidates=500&top_k=10"
 ```
 
-## Status: trained, evaluated, and served — on real data
+## Historical experiment results — on real data
 
 - ALS: 144K users, 17K items, 13M nonzero interactions (full 21M-row train set)
 - FAISS flat index: sub-4ms p99 retrieval even at 2000 candidates
@@ -73,6 +74,27 @@ uvicorn src.serving.app:app --reload
 - 5 passing pytest smoke tests covering the temporal split, feature
   assembly, LightGBM data prep, and ranking metrics correctness.
 
+## Reproducibility repair (October 2026)
+
+The package layout now matches the imports and commands above. Run commands from
+this repository root using Python 3.11 or 3.12. Model artifacts and the MovieLens
+source data are not bundled; training is required before starting the API.
+
+The repaired pipeline reserves the final 15% of timestamps for testing. Within
+its earlier period, it freezes retrieval embeddings and aggregate features on
+an initial history window, then uses successive windows for ranker training and
+validation. `prepare_ranker` shares the API's feature builder and computes cosine
+retrieval scores. Neither validation nor test ratings enter the frozen features.
+The legacy `assemble_training_features` helper uses same-row rating aggregates;
+it is retained for historical context and is not used by the repaired CLI.
+
+**The historical metrics below/in `reports/RESULTS.md` have not been rerun under
+this corrected protocol. They are not performance claims for this revision.**
+The 35% option samples users for ranker training/validation only. The pipeline
+still trains on rated items rather than mined negatives, and the original
+cold-user/item eligibility filtering examines the complete dataset. Thus this
+remains a research demonstration, not an unbiased production benchmark.
+
 ## Known limitations
 See `reports/RESULTS.md` for full detail — ranker trained on a 35% user
 sample (not the full dataset) and no hard-negative mining are the two that
@@ -80,5 +102,6 @@ matter most; FAISS uses a flat (exact) index rather than IVF, appropriate at
 this item-catalog size (18K items) but not representative of
 million-item-scale retrieval; offline eval sampled 800–2000 of 144K users
 per run for tractability.
+
 
 

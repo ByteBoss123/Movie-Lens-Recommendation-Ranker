@@ -1,0 +1,24 @@
+{
+  "k_candidates": 500,
+  "n_eval_users": 1500,
+  "retrieval_only": {
+    "ndcg@10": 0.03636693932987214,
+    "mrr": 0.08723875144853366,
+    "recall@50": 0.05636634434510455,
+    "n_users_evaluated": 1500
+  },
+  "retrieval_plus_ranker": {
+    "ndcg@10": 0.03738299198450204,
+    "mrr": 0.08685140242448855,
+    "recall@50": 0.06550413575855507,
+    "n_users_evaluated": 1500
+  },
+  "retrieval_latency_ms": {
+    "p50": 0.8677480000187643,
+    "p99": 1.2256358298782288
+  },
+  "ranker_stage_latency_ms": {
+    "p50": 4.264279500034718,
+    "p99": 5.829147099891542
+  }
+}
