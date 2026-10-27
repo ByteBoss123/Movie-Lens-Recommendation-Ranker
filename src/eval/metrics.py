@@ -30,7 +30,9 @@ def ndcg_at_k(ranked_item_ids: list, relevant_item_ids: set, k: int) -> float:
     relevance = [1.0 if item in relevant_item_ids else 0.0 for item in ranked_item_ids]
     actual_dcg = dcg_at_k(relevance, k)
 
-    ideal_relevance = sorted(relevance, reverse=True)
+    # Normalize against all known relevant items, including retrieval misses.
+    # Otherwise retrieving fewer relevant candidates can inflate NDCG.
+    ideal_relevance = [1.0] * min(k, len(relevant_item_ids))
     ideal_dcg = dcg_at_k(ideal_relevance, k)
 
     if ideal_dcg == 0:

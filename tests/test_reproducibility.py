@@ -33,3 +33,10 @@ def test_retrieval_returns_matching_ids_and_scores_for_small_catalog():
 def test_api_imports_from_clean_package():
     from src.serving.app import app
     assert '/recommend' in {route.path for route in app.routes}
+
+def test_ndcg_penalizes_relevant_items_missing_from_candidates():
+    from src.eval.metrics import ndcg_at_k
+    expected = 1 / (1 + 1 / np.log2(3))
+    assert ndcg_at_k([1, 9], {1, 2}, 2) == pytest.approx(expected)
+    # Adding a relevant item below k must not change the top-k metric.
+    assert ndcg_at_k([1, 9, 2], {1, 2}, 2) == pytest.approx(expected)

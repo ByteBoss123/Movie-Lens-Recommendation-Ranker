@@ -1,3 +1,6 @@
+> Superseded by [the corrected real-data run](run-2026-10-26/RESULTS.md).
+> Historical NDCG used candidate-only normalization and must not be presented as current validated performance.
+
 # RankForge: Historical Results
 
 These are committed results from the earlier experiment, not rerun metrics for

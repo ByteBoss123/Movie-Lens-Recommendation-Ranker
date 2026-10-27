@@ -1,0 +1,7 @@
+Training until validation scores don't improve for 30 rounds
+[50]	valid_0's ndcg@5: 0.739732	valid_0's ndcg@10: 0.764003	valid_0's ndcg@20: 0.799456
+[100]	valid_0's ndcg@5: 0.740977	valid_0's ndcg@10: 0.765323	valid_0's ndcg@20: 0.800333
+[150]	valid_0's ndcg@5: 0.741382	valid_0's ndcg@10: 0.765722	valid_0's ndcg@20: 0.800678
+Early stopping, best iteration is:
+[161]	valid_0's ndcg@5: 0.742127	valid_0's ndcg@10: 0.766049	valid_0's ndcg@20: 0.800947
+Model trained and logged to MLflow + saved to models/lambdarank_model.txt

@@ -1,0 +1,27 @@
+{
+  "ranker_training_rows": 241581,
+  "ranker_validation_rows": 241582,
+  "ranker_user_fraction": 1.0,
+  "early_stopping_best_iteration": 161,
+  "test_rows": 33048,
+  "test_known_users": 938,
+  "files": {
+    "user_embeddings.npy": {
+      "bytes": 23234688,
+      "sha256": "accce0dbe6f0e39dc9da858557841dc1bfe3b507d17526e920df3a1fa6bdd408"
+    },
+    "lambdarank_model.txt": {
+      "bytes": 563652,
+      "sha256": "dc36ac407f56cccd30bf95e6ec2bf8debe890237d175d5073315b6d468f18039"
+    },
+    "item_embeddings.npy": {
+      "bytes": 2383232,
+      "sha256": "54a4a1395be17edb1c113b1d7b8c183e80ef5ae3739cf86159549c16a881482e"
+    },
+    "id_mappings.pkl": {
+      "bytes": 2326348,
+      "sha256": "dcd7665a3f9fbb22615aba4c24dcd0ad4227146ee42bb956a665da0568c12719"
+    }
+  },
+  "eligible_test_users_with_positive_ratings": 896
+}

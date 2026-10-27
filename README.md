@@ -1,107 +1,80 @@
-# RankForge: Two-Stage Recommendation Ranking System
+# RankForge — Two-stage recommendation ranking
 
-Candidate generation (ANN retrieval) + learned ranking (LambdaRank), trained
-and evaluated on the real MovieLens 25M dataset, with an explicit
-latency/accuracy tradeoff analysis across candidate pool sizes.
+Select relevant content from a large catalog while measuring the cost of
+retrieval and reranking. The pipeline combines ALS user/item embeddings,
+FAISS retrieval, LightGBM LambdaRank and a FastAPI recommendation endpoint.
 
-## Architecture
+## Measured on MovieLens 25M
 
-```mermaid
-flowchart LR
-    A[User] --> B["Retrieval stage<br/>ALS embeddings + FAISS ANN search<br/>(src/retrieval/)"]
-    B -->|"top-K candidates<br/>+ retrieval scores"| C["Feature build<br/>user/item aggregates + genre match<br/>(src/features/serving_features.py)"]
-    C --> D["Ranking stage<br/>LightGBM LambdaRank<br/>(src/ranking/)"]
-    D -->|"re-ranked top-k"| E[FastAPI /recommend]
-    E --> A
+The repaired pipeline has now been trained and evaluated on real data.
+It reads the full **25,000,095-rating** input; the chronological protocol uses
+**12.65M historical ratings** for retrieval and **241,581 later ratings** for
+ranker training, with a separate validation window. Evaluation includes all
+**896 eligible test users** with positive labels. It does not train the ranker
+on all 25M ratings or evaluate all MovieLens users.
 
-    F[("MovieLens 25M<br/>train.parquet")] --> B
-    F --> C
-    G["Offline eval<br/>NDCG@10, MRR, Recall@50<br/>retrieval-only vs. +ranker<br/>(src/eval/)"] -.uses same artifacts as.-> B
-    G -.-> D
-```
+At **500 candidates**, reranking improves:
 
-1. **Retrieval stage** — FAISS ANN search over item embeddings from ALS
-   matrix factorization (`src/retrieval/`)
-2. **Feature engineering** — every feature explicitly labeled TRAIN_SAFE /
-   SERVE_SAFE as a train/serve-skew guard; serve-time feature building is
-   shared between eval and the live API, not duplicated (`src/features/`)
-3. **Ranking stage** — LightGBM LambdaRank re-ranks retrieved candidates
-   (`src/ranking/`)
-4. **Serving** — FastAPI `/recommend` endpoint with per-stage latency
-   instrumentation (`src/serving/`)
-5. **Eval** — NDCG@10, MRR, Recall@50 for retrieval-only vs. retrieval+ranker,
-   plus a latency/accuracy sweep across candidate pool sizes
-   (`src/eval/`, results in `reports/RESULTS.md`)
+- **NDCG@10: 0.01122 -> 0.01726 (+53.8% relative)**.
+- **Recall@50: 0.03960 -> 0.05442 (+37.4% relative)**.
+- Measured offline end-to-end compute **p99: 4.92 ms**.
 
-## Quickstart
+[Current results, protocol, provenance and limitations](reports/run-2026-10-26/RESULTS.md)
+include all three candidate settings. These are offline research results,
+not online advertising lift or production latency guarantees. Absolute scores
+remain low, and the long frozen-history window excludes most cold users/items.
+
+## Pipeline
+
+1. Chronological data preparation creates history, ranker training labels,
+   ranker validation labels, and a final test period.
+2. ALS learns embeddings only from history; FAISS indexes the item embeddings.
+3. Ranker feature generation uses frozen historical lookups and cosine scores.
+   The feature builder is shared with evaluation and the API.
+4. LambdaRank trains on the later labels and early-stops on validation.
+5. Evaluation compares retrieval alone with reranking on identical test users,
+   measuring NDCG@10, Recall@50, MRR and per-stage/total latency.
+6. FastAPI loads artifacts once at startup and validates recommendation requests.
+
+## Run
+
+Use Python 3.11 or 3.12, from this repository root:
 
 ```bash
+python -m venv .venv
+source .venv/bin/activate
 python -m pip install -r requirements-dev.txt
+export MLFLOW_DISABLE_TELEMETRY=true
+export MLFLOW_DISABLE_AGENT_HINT=true
+export MLFLOW_TRACKING_URI=sqlite:///mlflow.db
+export OMP_NUM_THREADS=4
+export OPENBLAS_NUM_THREADS=1
+python -m pytest tests -q
 
-# Run the smoke-test suite (fabricated small data, ~3s)
-python -m pytest tests/
-
-# Full pipeline on real data (requires ml-25m.zip from grouplens.org,
-# unzipped to data/raw/ml-25m/):
+# Obtain MovieLens 25M from GroupLens; extract into data/raw/ml-25m/.
 python -m src.data.load_movielens
 python -m src.retrieval.train_als
-python -m src.features.prepare_ranker --user-fraction 0.35
+python -m src.features.prepare_ranker --user-fraction 1
 python -m src.ranking.train_ranker
-python -m src.eval.evaluate
-
-# Serve
+python -m src.eval.benchmark --output reports/current_benchmark.json
 python -m uvicorn src.serving.app:app --reload
-# then: curl "http://127.0.0.1:8000/recommend?user_id=1&k_candidates=500&top_k=10"
 ```
 
-## Historical experiment results — on real data
+`--user-fraction 1` includes all eligible ranker users; the CLI's 0.35 default
+is available for memory-constrained experiments. Source data and trained model
+artifacts are not bundled. The complete benchmark must precede API startup.
 
-- ALS: 144K users, 17K items, 13M nonzero interactions (full 21M-row train set)
-- FAISS flat index: sub-4ms p99 retrieval even at 2000 candidates
-- LambdaRank: trained on a 35%-user sample (RAM-constrained dev environment;
-  see `reports/RESULTS.md` for why)
-- **Headline finding**: the ranker reliably improves Recall@50 (+16 to +21%)
-  but shows mixed/negative NDCG@10 lift depending on candidate pool size —
-  a genuine, investigated result, not a clean win. Full writeup, including
-  the latency/accuracy Pareto frontier and three memory-scaling bugs found
-  at real-data scale, in **`reports/RESULTS.md`**.
-- **Serving layer** (`src/serving/app.py`): FastAPI endpoint (`/recommend`)
-  loading all artifacts once at startup, with per-stage (retrieval vs.
-  ranking) latency measured on every request — verified end-to-end with
-  real users, real recommendations, and tested error handling (unknown user,
-  invalid params). Online latency matches the offline sweep: ~2.5ms at
-  k=500, ranking stage scaling with candidate count as expected.
-- 5 passing pytest smoke tests covering the temporal split, feature
-  assembly, LightGBM data prep, and ranking metrics correctness.
+## Verification and interpretation
 
-## Reproducibility repair (October 2026)
+Nine tests cover package imports, feature/label isolation, temporal splitting,
+ranking metrics and small-catalog retrieval. The current real-data run also
+includes a local API smoke check; see the run directory for evidence.
 
-The package layout now matches the imports and commands above. Run commands from
-this repository root using Python 3.11 or 3.12. Model artifacts and the MovieLens
-source data are not bundled; training is required before starting the API.
+Old results in `reports/RESULTS.md` and the older JSON reports in `reports/`
+are retained for traceability. Their NDCG normalization was incorrect and their
+training protocol differs; **use the current results linked above**. The legacy
+`assemble_training_features` helper is retained but unused by the current CLI.
 
-The repaired pipeline reserves the final 15% of timestamps for testing. Within
-its earlier period, it freezes retrieval embeddings and aggregate features on
-an initial history window, then uses successive windows for ranker training and
-validation. `prepare_ranker` shares the API's feature builder and computes cosine
-retrieval scores. Neither validation nor test ratings enter the frozen features.
-The legacy `assemble_training_features` helper uses same-row rating aggregates;
-it is retained for historical context and is not used by the repaired CLI.
-
-**The historical metrics below/in `reports/RESULTS.md` have not been rerun under
-this corrected protocol. They are not performance claims for this revision.**
-The 35% option samples users for ranker training/validation only. The pipeline
-still trains on rated items rather than mined negatives, and the original
-cold-user/item eligibility filtering examines the complete dataset. Thus this
-remains a research demonstration, not an unbiased production benchmark.
-
-## Known limitations
-See `reports/RESULTS.md` for full detail — ranker trained on a 35% user
-sample (not the full dataset) and no hard-negative mining are the two that
-matter most; FAISS uses a flat (exact) index rather than IVF, appropriate at
-this item-catalog size (18K items) but not representative of
-million-item-scale retrieval; offline eval sampled 800–2000 of 144K users
-per run for tractability.
-
-
-
+The initial full-dataset count filter, frozen historical catalog, lack of
+hard-negative training and absence of production load tests remain limitations.
+MovieLens is a research dataset; acknowledge GroupLens and follow its license.

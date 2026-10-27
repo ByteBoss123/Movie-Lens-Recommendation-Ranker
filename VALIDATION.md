@@ -13,3 +13,10 @@ Verification uses small synthetic fixtures, not the 25M-row benchmark. It checks
 the pipeline mechanics and import paths, not recommendation quality or production
 load capacity. The original data/model artifacts must be obtained or generated to
 run the full benchmark. See README for commands and remaining limitations.
+
+## Full-input benchmark completed
+
+See `reports/run-2026-10-26/RESULTS.md`. The real-data run completed retrieval
+training, all-eligible-user ranker training, and evaluation at 100/500/2000
+candidates over all 896 eligible positive-label test users. NDCG normalization
+was corrected and protected by a regression test; nine tests now pass.

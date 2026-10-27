@@ -64,12 +64,14 @@ def run_evaluation(n_eval_users: int = 2000, k_candidates: int = 500, seed: int 
     ranker_rankings = {}
     retrieval_latencies = []
     ranker_latencies = []
+    total_latencies = []
 
     for user_id in eval_users:
         user_idx = user2idx[user_id]
         user_emb = user_embeddings[user_idx]
 
-        t0 = time.perf_counter()
+        request_start = time.perf_counter()
+        t0 = request_start
         item_ids, scores = retriever.retrieve(user_emb, k=k_candidates)
         retrieval_latencies.append((time.perf_counter() - t0) * 1000)
 
@@ -81,6 +83,7 @@ def run_evaluation(n_eval_users: int = 2000, k_candidates: int = 500, seed: int 
         order = np.argsort(-ranker_scores)
         ranker_rankings[user_id] = [item_ids[i] for i in order]
         ranker_latencies.append((time.perf_counter() - t0) * 1000)  # feature build + scoring only
+        total_latencies.append((time.perf_counter() - request_start) * 1000)
 
     retrieval_metrics = evaluate_rankings(retrieval_rankings, per_user_relevant, ndcg_k=10, recall_k=50)
     ranker_metrics = evaluate_rankings(ranker_rankings, per_user_relevant, ndcg_k=10, recall_k=50)
@@ -90,6 +93,10 @@ def run_evaluation(n_eval_users: int = 2000, k_candidates: int = 500, seed: int 
         "n_eval_users": len(eval_users),
         "retrieval_only": retrieval_metrics,
         "retrieval_plus_ranker": ranker_metrics,
+        "total_latency_ms": {
+            "p50": float(np.percentile(total_latencies, 50)),
+            "p99": float(np.percentile(total_latencies, 99)),
+        },
         "retrieval_latency_ms": {
             "p50": float(np.percentile(retrieval_latencies, 50)),
             "p99": float(np.percentile(retrieval_latencies, 99)),

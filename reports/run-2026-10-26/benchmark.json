@@ -1,0 +1,103 @@
+{
+  "protocol": "frozen history; later ranker train/validation; final chronological test",
+  "seed": 42,
+  "ranker_user_fraction": 1.0,
+  "python": "3.12.14",
+  "threads": {
+    "OMP_NUM_THREADS": "4",
+    "OPENBLAS_NUM_THREADS": "1"
+  },
+  "versions": {
+    "numpy": "2.5.4",
+    "pandas": "3.1.0",
+    "lightgbm": "4.7.0",
+    "faiss-cpu": "1.15.1",
+    "implicit": "0.7.3"
+  },
+  "runs": [
+    {
+      "k_candidates": 100,
+      "n_eval_users": 896,
+      "retrieval_only": {
+        "ndcg@10": 0.01122279523041629,
+        "mrr": 0.03481105949937949,
+        "recall@50": 0.03960057824726394,
+        "n_users_evaluated": 896
+      },
+      "retrieval_plus_ranker": {
+        "ndcg@10": 0.0159264059252888,
+        "mrr": 0.04422498616810011,
+        "recall@50": 0.043335772849455896,
+        "n_users_evaluated": 896
+      },
+      "total_latency_ms": {
+        "p50": 0.8943095000404355,
+        "p99": 2.6952017998610223
+      },
+      "retrieval_latency_ms": {
+        "p50": 0.16906899998048175,
+        "p99": 0.2905033000502039
+      },
+      "ranker_stage_latency_ms": {
+        "p50": 0.7216595000727466,
+        "p99": 2.518740900029568
+      }
+    },
+    {
+      "k_candidates": 500,
+      "n_eval_users": 896,
+      "retrieval_only": {
+        "ndcg@10": 0.01122279523041629,
+        "mrr": 0.03643167720972941,
+        "recall@50": 0.03960057824726394,
+        "n_users_evaluated": 896
+      },
+      "retrieval_plus_ranker": {
+        "ndcg@10": 0.017257378017777436,
+        "mrr": 0.04885018540615551,
+        "recall@50": 0.05441718575864912,
+        "n_users_evaluated": 896
+      },
+      "total_latency_ms": {
+        "p50": 3.4250059999294535,
+        "p99": 4.9224162499171955
+      },
+      "retrieval_latency_ms": {
+        "p50": 0.41873749989917997,
+        "p99": 0.7382996499927681
+      },
+      "ranker_stage_latency_ms": {
+        "p50": 2.9902489999358295,
+        "p99": 4.452118549954771
+      }
+    },
+    {
+      "k_candidates": 2000,
+      "n_eval_users": 896,
+      "retrieval_only": {
+        "ndcg@10": 0.01122279523041629,
+        "mrr": 0.0366473493742535,
+        "recall@50": 0.03960057824726394,
+        "n_users_evaluated": 896
+      },
+      "retrieval_plus_ranker": {
+        "ndcg@10": 0.016715941106436278,
+        "mrr": 0.047323507881380115,
+        "recall@50": 0.0590848877318011,
+        "n_users_evaluated": 896
+      },
+      "total_latency_ms": {
+        "p50": 13.172188499993354,
+        "p99": 18.73521659996411
+      },
+      "retrieval_latency_ms": {
+        "p50": 1.3228104999143397,
+        "p99": 1.9440296999618956
+      },
+      "ranker_stage_latency_ms": {
+        "p50": 11.844426000038766,
+        "p99": 17.325011999980674
+      }
+    }
+  ]
+}

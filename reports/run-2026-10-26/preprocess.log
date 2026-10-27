@@ -1,0 +1,5 @@
+Filtered ratings: 25,000,095 -> 24,810,483 rows (162,541 users, 18,430 items)
+Train: 21,088,910 rows up to 2017-03-08 10:38:55
+Test:  520,185 rows after cutoff (post cold-start filtering)
+Train: 12,653,346 rows up to 2008-02-20 09:00:41
+Test:  483,163 rows after cutoff (post cold-start filtering)

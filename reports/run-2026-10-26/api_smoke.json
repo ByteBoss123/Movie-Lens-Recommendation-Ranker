@@ -1,0 +1,228 @@
+{
+  "scope": "local FastAPI TestClient, real trained model; no external deployment or load test",
+  "requests": [
+    {
+      "user_id": 107848,
+      "status": 200,
+      "recommendations": 10,
+      "testclient_latency_ms": 7.191423999984181,
+      "stage_latency_ms": {
+        "retrieval": 0.667,
+        "ranking": 3.502,
+        "total": 4.169
+      }
+    },
+    {
+      "user_id": 72360,
+      "status": 200,
+      "recommendations": 10,
+      "testclient_latency_ms": 6.425734999993438,
+      "stage_latency_ms": {
+        "retrieval": 0.686,
+        "ranking": 3.827,
+        "total": 4.514
+      }
+    },
+    {
+      "user_id": 113150,
+      "status": 200,
+      "recommendations": 10,
+      "testclient_latency_ms": 5.518828000049325,
+      "stage_latency_ms": {
+        "retrieval": 0.471,
+        "ranking": 3.151,
+        "total": 3.623
+      }
+    },
+    {
+      "user_id": 122853,
+      "status": 200,
+      "recommendations": 10,
+      "testclient_latency_ms": 5.52194200008671,
+      "stage_latency_ms": {
+        "retrieval": 0.428,
+        "ranking": 3.528,
+        "total": 3.956
+      }
+    },
+    {
+      "user_id": 41629,
+      "status": 200,
+      "recommendations": 10,
+      "testclient_latency_ms": 5.188696000004711,
+      "stage_latency_ms": {
+        "retrieval": 0.51,
+        "ranking": 3.099,
+        "total": 3.61
+      }
+    },
+    {
+      "user_id": 70031,
+      "status": 200,
+      "recommendations": 10,
+      "testclient_latency_ms": 4.546565000055125,
+      "stage_latency_ms": {
+        "retrieval": 0.481,
+        "ranking": 2.561,
+        "total": 3.042
+      }
+    },
+    {
+      "user_id": 160513,
+      "status": 200,
+      "recommendations": 10,
+      "testclient_latency_ms": 5.10884300001635,
+      "stage_latency_ms": {
+        "retrieval": 0.45,
+        "ranking": 3.219,
+        "total": 3.669
+      }
+    },
+    {
+      "user_id": 103856,
+      "status": 200,
+      "recommendations": 10,
+      "testclient_latency_ms": 5.0871319999714615,
+      "stage_latency_ms": {
+        "retrieval": 0.552,
+        "ranking": 3.14,
+        "total": 3.692
+      }
+    },
+    {
+      "user_id": 28307,
+      "status": 200,
+      "recommendations": 10,
+      "testclient_latency_ms": 4.502569999885964,
+      "stage_latency_ms": {
+        "retrieval": 0.576,
+        "ranking": 2.765,
+        "total": 3.341
+      }
+    },
+    {
+      "user_id": 141934,
+      "status": 200,
+      "recommendations": 10,
+      "testclient_latency_ms": 4.262545000074169,
+      "stage_latency_ms": {
+        "retrieval": 0.463,
+        "ranking": 2.474,
+        "total": 2.937
+      }
+    },
+    {
+      "user_id": 109731,
+      "status": 200,
+      "recommendations": 10,
+      "testclient_latency_ms": 4.5939490000819205,
+      "stage_latency_ms": {
+        "retrieval": 0.475,
+        "ranking": 2.858,
+        "total": 3.333
+      }
+    },
+    {
+      "user_id": 99289,
+      "status": 200,
+      "recommendations": 10,
+      "testclient_latency_ms": 4.947902000139948,
+      "stage_latency_ms": {
+        "retrieval": 0.721,
+        "ranking": 2.9,
+        "total": 3.621
+      }
+    },
+    {
+      "user_id": 113784,
+      "status": 200,
+      "recommendations": 10,
+      "testclient_latency_ms": 8.609545999888724,
+      "stage_latency_ms": {
+        "retrieval": 0.415,
+        "ranking": 6.772,
+        "total": 7.188
+      }
+    },
+    {
+      "user_id": 20158,
+      "status": 200,
+      "recommendations": 10,
+      "testclient_latency_ms": 6.043511999905604,
+      "stage_latency_ms": {
+        "retrieval": 0.515,
+        "ranking": 4.091,
+        "total": 4.605
+      }
+    },
+    {
+      "user_id": 117511,
+      "status": 200,
+      "recommendations": 10,
+      "testclient_latency_ms": 11.714084000004732,
+      "stage_latency_ms": {
+        "retrieval": 1.126,
+        "ranking": 7.012,
+        "total": 8.138
+      }
+    },
+    {
+      "user_id": 141260,
+      "status": 200,
+      "recommendations": 10,
+      "testclient_latency_ms": 5.758991999982754,
+      "stage_latency_ms": {
+        "retrieval": 0.624,
+        "ranking": 3.699,
+        "total": 4.323
+      }
+    },
+    {
+      "user_id": 18995,
+      "status": 200,
+      "recommendations": 10,
+      "testclient_latency_ms": 19.964580000078058,
+      "stage_latency_ms": {
+        "retrieval": 0.561,
+        "ranking": 16.976,
+        "total": 17.537
+      }
+    },
+    {
+      "user_id": 9855,
+      "status": 200,
+      "recommendations": 10,
+      "testclient_latency_ms": 6.165682000073502,
+      "stage_latency_ms": {
+        "retrieval": 0.585,
+        "ranking": 3.828,
+        "total": 4.413
+      }
+    },
+    {
+      "user_id": 20469,
+      "status": 200,
+      "recommendations": 10,
+      "testclient_latency_ms": 5.444247000014002,
+      "stage_latency_ms": {
+        "retrieval": 0.528,
+        "ranking": 3.533,
+        "total": 4.061
+      }
+    },
+    {
+      "user_id": 129601,
+      "status": 200,
+      "recommendations": 10,
+      "testclient_latency_ms": 5.695339000112654,
+      "stage_latency_ms": {
+        "retrieval": 0.524,
+        "ranking": 3.462,
+        "total": 3.986
+      }
+    }
+  ],
+  "unknown_user_status": 404,
+  "invalid_candidate_count_status": 400,
+  "health": "ok"
+}
